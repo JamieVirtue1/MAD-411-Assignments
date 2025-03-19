@@ -2,6 +2,7 @@ package com.example.android7
 
 import android.os.Bundle
 import android.text.Layout
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -24,6 +25,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        //logging onCreate message
+        Log.d("ActivityLifecycle", "onCreate() has been called")
 
         expenseName = findViewById(R.id.expenseName)
         expenseAmount = findViewById(R.id.expenseAmount)
@@ -59,6 +63,36 @@ class MainActivity : AppCompatActivity() {
 
             }
         }
+    }
+
+    override fun onStart(){
+        super.onStart()
+        //logging onCreate message
+        Log.d("ActivityLifecycle", "onStart() has been called")
+    }
+
+    override fun onResume(){
+        super.onResume()
+        //logging onResume message
+        Log.d("ActivityLifecycle", "onResume() has been called")
+    }
+
+    override fun onPause(){
+        super.onPause()
+        //logging onCreate message
+        Log.d("ActivityLifecycle", "onPause() has been called")
+    }
+
+    override fun onStop(){
+        super.onStop()
+        //logging onCreate message
+        Log.d("ActivityLifecycle", "onStop() has been called")
+    }
+
+    override fun onDestroy(){
+        super.onDestroy()
+        //logging onCreate message
+        Log.d("ActivityLifecycle", "onDestroy() has been called")
     }
 }
 
