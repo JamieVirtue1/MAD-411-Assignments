@@ -20,6 +20,13 @@
             android:hint="Amount"
             android:inputType="numberDecimal" />
 
+    <DatePicker
+            android:id="@+id/expenseDate"
+            android:layout_width="wrap_content"
+            android:layout_height="127dp"
+            android:calendarViewShown="false"
+            android:datePickerMode="spinner" />
+
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/expenseRecyclerView"
             android:layout_width="match_parent"
@@ -31,5 +38,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add Expense" />
+
+    <Button
+            android:id="@+id/financialTipsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Financial Tips" />
 
 </LinearLayout>
