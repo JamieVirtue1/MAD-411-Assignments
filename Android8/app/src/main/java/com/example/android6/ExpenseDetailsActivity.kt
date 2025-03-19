@@ -12,17 +12,14 @@ class ExpenseDetailsActivity : AppCompatActivity() {
 
         //pulling data from main activity
         val expenseName = intent.getStringExtra("NAME_OF_EXPENSE")
-        //required default value
         val expenseAmount = intent.getDoubleExtra("AMOUNT_OF_EXPENSE", 0.0)
-
         val expenseDate = intent.getStringExtra("DATE_OF_EXPENSE")
 
-        //binding the retrieved data to my text views
+        //binding the pulled data to my textViews
         val nameTextView = findViewById<TextView>(R.id.expenseNameDetails)
         val amountTextView = findViewById<TextView>(R.id.expenseAmountDetails)
         val dateTextView = findViewById<TextView>(R.id.expenseDateDetails)
 
-        //formatting my text to display on ExpenseDetailsActivity view
         nameTextView.text = "Expense Name: $expenseName"
 
         val formattedAmount = String.format("$%.2f", expenseAmount)

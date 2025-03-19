@@ -3,8 +3,8 @@ package com.example.android8
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.Layout
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -13,9 +13,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.DatePicker
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import java.sql.Date
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,6 +28,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var financialTipsButton: Button
     lateinit var recyclerViewAdapter: ExpenseAdapter
     val listOfExpenses = mutableListOf<Pair<String, Pair<String, Double>>>()
+
+    lateinit var footerFragment: FooterFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +56,24 @@ class MainActivity : AppCompatActivity() {
         recyclerViewAdapter = ExpenseAdapter(listOfExpenses)
         expenseRecyclerView.adapter = recyclerViewAdapter
 
+
+        //instance of header class containing my ui
+        val headerFragment = HeaderFragment()
+
+        //starts the transaction that manages the fragment
+        val headerTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+
+        //replacing the headerTransaction with my headerContainer and headerFragment
+        headerTransaction.replace(R.id.headerContainer, headerFragment)
+
+        //submits the transaction replacement and displays my fragment in the headerContainer
+        headerTransaction.commit()
+
+        footerFragment = FooterFragment()
+        val footerTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        footerTransaction.replace(R.id.footerContainer, footerFragment)
+        footerTransaction.commit()
+
         //add expense button and logic
         addExpenseButton.setOnClickListener {
             val name = expenseName.text.toString()
@@ -73,6 +94,9 @@ class MainActivity : AppCompatActivity() {
                 //notifying the adapter a change has been made at this specific index
                 recyclerViewAdapter.notifyItemInserted(listOfExpenses.size - 1)
 
+                //adding expenses together
+                footerFragment.addExpenses(cost.toDouble())
+
                 //clear the EditText fields for new inputs
                 expenseName.text.clear()
                 expenseAmount.text.clear()
@@ -80,7 +104,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        //button that sends to financial help
+        //financial tip button that links you to cibc
         financialTipsButton.setOnClickListener {
             val url = "https://www.cibc.com/en/business/advice-centre/articles/financial-tips.html"
 
@@ -90,7 +114,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(financialTipsIntent)
         }
     }
-
 
     override fun onStart(){
         super.onStart()
@@ -168,12 +191,14 @@ class ExpenseAdapter(
             textSize = 16f
         }
 
-        //textview for the date field
+        //textview for the expense date
         val dateTextView = TextView(parent.context).apply {
+            //styling parameters
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply {
+                //making space between recyclerview fields
                 setMargins(0,20,0,20)
             }
         }
@@ -188,7 +213,7 @@ class ExpenseAdapter(
             )
         }
 
-        //button for showing item details
+        //button for showing details together of a specific expense
         val showDetailsButton = Button(parent.context).apply{
             text = "Show Details"
 
@@ -259,4 +284,49 @@ class ExpenseAdapter(
         val deleteButton: Button,
         val showDetailsButton: Button
     ) : RecyclerView.ViewHolder(itemView)
+}
+
+//class for header fragment that utilizes fragment_header xml
+class HeaderFragment : Fragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_header, container, false)
+    }
+}
+
+//class for footer fragment that utilizes fragment_footer xml
+class FooterFragment : Fragment() {
+
+    lateinit var totalCostTextView: TextView
+    var totalCost: Double = 0.0
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_footer, container, false)
+
+
+        totalCostTextView = view.findViewById(R.id.expenseFooter)
+        //calling update function
+        updateTotalAmount()
+
+        //returning my view that follows fragment_footer styling
+        return view
+    }
+
+    //adding expenses to a totalCost variable
+    fun addExpenses(amount: Double){
+        totalCost += amount
+        updateTotalAmount()
+    }
+
+    //updating the textview to keep it updated per additional expense added
+    fun updateTotalAmount(){
+        totalCostTextView.text = "Total Cost: $${totalCost}"
+    }
 }
